@@ -31,8 +31,7 @@ def taks1(filename, country, year, noc, output):
     silver = 0
     bronze = 0
     counter = 0
-    result = ""
-    result_list = ""
+    results = ""
 
     with open(filename, "r") as file:
         while True:
@@ -41,42 +40,50 @@ def taks1(filename, country, year, noc, output):
                 break
             data = line.strip().split("\t")
             if data[14] != "NA":
-                if data[6] == country or data[7] == noc and data[9] == year:
-                    counter += 1
-                    if counter < 11:
-                        if data[14] == 'Gold':
-                            gold += 1
-                        elif data[14] == 'Silver':
-                            silver += 1
-                        elif data[14] == 'Bronze':
-                            bronze += 1
-                            result += f'{data[1]} - {data[12]} - {data[14]}\n'
-                            result_list = str(result_list) + "".join(result)
-                        elif counter == 10:
-                            break
-                        how_many_medals = f'golds medals - {gold}, silver medals - {silver}, bronze medals - {bronze}'
-                        print(result_list)
+                if (data[6] == country or data[7] == noc) and data[9] == year:
+                    if data[14] == 'Gold':
+                        gold += 1
+                    elif data[14] == 'Silver':
+                        silver += 1
+                    elif data[14] == 'Bronze':
+                        bronze += 1
+                    if counter < 10:
+                        counter += 1
+                        result = f'{data[1]} - {data[12]} - {data[14]}\n'
+                        print(result.strip())
+                        results += result
+        how_many_medals = f'golds medals - {gold}, silver medals - {silver}, bronze medals - {bronze}'
         print(how_many_medals)
         if output:
             with open("new_file", "w") as file:
-                file.write(f"{result_list}\n {how_many_medals}")
-                file.close()
+                file.write(f"{results}\n {how_many_medals}")
 
 
 # python main.py --all total  --filename olimpic.tsv --year 2000
 
 
 def task2(filename, year):
+    d = dict()
     with open(filename, "r") as file:
         while True:
             line = file.readline()
             if not line:
                 break
             data = line.strip().split("\t")
-            if data[9] == year:
-                if data[14] != 'NA':
-                    result = f'{data[6]} - {data[14]}'
-                    print(result)
+            country = data[6]
+            if data[9] == year and data[14] != "NA":
+                if country not in d:
+                    d[country] = [0, 0, 0]
+                # elif year not in d[country]:
+                #     d[country][year] = [0, 0, 0]
+                if data[14] == "Gold":
+                    d[country][0] += 1
+                if data[14] == "Silver":
+                    d[country][1] += 1
+                if data[14] == "Bronze":
+                    d[country][2] += 1
+    for country, medals in d.items():
+        print(country, medals)
 
 
 def task3(filename, all_country):
@@ -93,10 +100,9 @@ def task3(filename, all_country):
             if not line:
                 break
             data = line.strip().split("\t")
-
-
-
-
+            years_data = data[9]
+            medals_data = data[14]
+            counrty_data = data[6]
 
 
 def task4():
